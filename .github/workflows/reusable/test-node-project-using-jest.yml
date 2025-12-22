@@ -1,0 +1,34 @@
+name: Reusable - Test Node.js Project (Jest)
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        required: true
+        type: string
+      workdir:
+        required: true
+        type: string
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: npm
+          cache-dependency-path: ${{ inputs.workdir }}/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ${{ inputs.workdir }}
+        run: npm ci
+
+      - name: Run tests
+        working-directory: ${{ inputs.workdir }}
+        run: npm test
