@@ -1,0 +1,15 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  sonarqube-analysis:
+    uses: ./.github/workflows/sonarqube-analysis.yaml
+    secrets:
+      sonar_token: ${{ secrets.SONAR_TOKEN }}
