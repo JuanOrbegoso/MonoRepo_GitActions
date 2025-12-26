@@ -18,6 +18,11 @@ jobs:
         with:
           package-json-filepath: ./package.json
 
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
       - name: Check if the tag exist
         run: |
           # Fetch tags
