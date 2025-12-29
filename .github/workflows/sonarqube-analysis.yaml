@@ -55,9 +55,6 @@ jobs:
         uses: sonarsource/sonarqube-quality-gate-action@cf038b0e0cdecfa9e56c198bbb7d21d751d62c3b # v1.2.0
         with:
           pollingTimeoutSec: 600
-          args: >
-            "-Dsonar.organization=${{ inputs.sonarqube_organization }}"
-            "-Dsonar.projectKey=${{ inputs.sonarqube_projectkey }}"
         env:
           SONAR_HOST_URL: ${{ inputs.sonar_host_url }}
           SONAR_TOKEN: ${{ secrets.sonar_token }}
