@@ -1,6 +1,9 @@
-name: Update README with Last Workflow Runs
+name: Update README with last workflow runs
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -14,9 +17,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Ensure jq is installed
-        run: sudo apt-get update && sudo apt-get install -y jq
-
       - name: Get last 5 workflow runs from GitHub API
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -29,17 +29,18 @@ jobs:
 
       - name: Generate markdown table
         run: |
-          echo "## Last 5 Workflow Runs" > runs.md
+          echo "## Últimos 5 Workflow Runs" > runs.md
           echo "" >> runs.md
           echo "| Workflow | Status | Conclusion | Created At | Link |" >> runs.md
-          echo "|----------|--------|------------|------------|------|" >> runs.md
+          echo "|---------|--------|------------|------------|------|" >> runs.md
 
           jq -r '.workflow_runs[] |
           "| \(.name) | \(.status) | \(.conclusion // "N/A") | \(.created_at) | [Link](\(.html_url)) |"' runs.json >> runs.md
 
       - name: Update README.md
         run: |
-          sed -i '/## Last 5 Workflow Runs/,$d' README.md || true
+          sed -i '/## Últimos 5 Workflow Runs/,$d' README.md || true
+          echo "" >> README.md
           cat runs.md >> README.md
 
       - name: Commit and push changes
@@ -47,5 +48,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git commit -m "docs: update last workflow runs status" || echo "No changes"
+          git diff --cached --quiet || git commit -m "docs: update workflow runs table"
           git push
